@@ -28,22 +28,16 @@ class Grades
     end
   end
 
-  def in_decline? array
-    quantification_of_decline = array.select{|a| a == :down}
-    any_up = array.include? :up
-    if any_up
+  def in_decline? microtrends_array
+    ups_and_downs = microtrends_array.delete_if{|microtrend| microtrend == :even}
+    if ups_and_downs[-3..-1].include? :up
       return false
-    elsif quantification_of_decline.length >= 3
+    else
       return true
     end
   end
 end
 
-
-# grades = Grades.new([6,3,5,4,3,4,4,5]).microtrends
-# p grades
-# grades = Grades.new([10, 9, 8, 7]).macrotrends
-# p grades
 
 json = File.read("../data/grades.json")
 grades = JSON.parse(json)
@@ -62,7 +56,6 @@ end
 grades.each do |k,v|
   p Grades.new(v).macrotrends
 end
-
 
 p in_decline
 p not_in_decline
